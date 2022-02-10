@@ -2,11 +2,22 @@ plugins {
 	// Apply the java-library plugin for API and implementation separation.
 	id 'java-library'
 	id "com.diffplug.spotless" version "6.2.2"
+	id 'maven-publish'
+	id "com.vanniktech.maven.publish" version "0.18.0"
+	id "signing"
 }
 
+group = 'io.github.martinwitt'
+version = '1.0'
 repositories {
 	// Use Maven Central for resolving dependencies.
+	mavenLocal()
 	mavenCentral()
+	gradlePluginPortal()
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
 }
 
 dependencies {
@@ -34,11 +45,16 @@ spotless {
 		endWithNewline()
 	}
 	java {
-
 		palantirJavaFormat()
 	}
 	groovyGradle {
 		target '*.gradle' // default target of groovyGradle
 		greclipse()
+	}
+}
+
+plugins.withId("com.vanniktech.maven.publish") {
+	mavenPublish {
+		sonatypeHost = "S01"
 	}
 }
